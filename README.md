@@ -9,7 +9,7 @@ Use your defined pdo object to construct PDOPager class. Assuming $pdo variable 
     // include('PdoPager.php');
   
     
-    $pager = new AGTR\PDOPager($pdo);
+    $pager = new \AGTR\PdoPager($pdo);
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS id,name FROM table WHERE field = :value";
     $params = array("value"=>1);
