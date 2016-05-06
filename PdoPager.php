@@ -9,7 +9,7 @@ class PdoPager
 {
 
   // records per page		
-  private $_pp = 15;
+  private $_pp = 16;
   // total record cout
   private $_total = 0;
   // current page record count, 
@@ -83,10 +83,10 @@ class PdoPager
   private function getPaginationMeta()
   {
   	$meta = array(
-  			"records_total" => $this->_total,
-  			"records_current" => $this->_count,
-  			"current_page_no" => $this->_current,
-  			"last_page_no" => $this->_last,
+  			"total_items" => $this->_total,
+  			"current_items" => $this->_count,
+  			"current_page" => $this->_current,
+  			"last_page" => $this->_last,
   		);
   		
     return $meta;
