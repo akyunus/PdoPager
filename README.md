@@ -2,7 +2,7 @@
 A php class for paginating sql select statement results with counting total found rows.
 
 ## Usage
-Simplest implementation example with none additional option.
+Here is a simplest implementation example with none additional option.
 Use your defined pdo object to construct PDOPager class. Assuming $pdo variable is defined and PDOPager.php is included.
 
     // $pdo = new PDO("...");
