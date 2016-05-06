@@ -21,9 +21,10 @@ class PdoPager
 
   // this class 
   private $_pdo;
-  
-  
-  public function __construct($pdo,$opts=null)
+  /**
+   * construct method dependency injection with pdo
+   */
+  public function __construct(\PDO $pdo,$opts=null)
   {
   	$this->_pdo = $pdo;
   	$this->_pp	= (isset($opts['per_page'])?$opts['per_page'] : $this->_pp);
@@ -33,21 +34,19 @@ class PdoPager
  * 
  * 
  */
-  public function paginate($sql,$vars = null,$page = 1,$perpage = null, $getmeta = true)
+  public function paginate($sql,$params = null,$page = 1,$perpage = null, $getmeta = true)
   {
 	
   	$perpage 	= (is_null($perpage)) 	? $this->_pp 	: $perpage;
   	$page    	= ($page < 1)		? 1 		: $page;
 	$start 		= $perpage * ($page - 1);
 	
-	$this->_current = $page;
-	
 	$sql .= " LIMIT $start, $perpage";
 		
 	try
 	{
 		$stmt = $this->_pdo->prepare($sql);
-		$stmt->execute($vars);
+		$stmt->execute($params);
 	}
 	catch(\PDOException $e)
 	{
@@ -55,7 +54,22 @@ class PdoPager
 	}
 	
 	$data['results'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    
+	
+	
+	// get total found rows
+	$this->_total = $this->_pdo->query("SELECT FOUND_ROWS()")->fetchColumn();
+	// current page no is known
+	$this->_current = $page;
+	// calcute total number of pages
+	$this->_last = floor((($this->_total - 1) / $perpage) + 1);
+	
+	// only if in last page, current pages record count may be 
+	if ($this->_current == $this->_last) 
+	{
+	    $this->_count   = count($data);
+	} else {
+	    $this->_count   = $perpage;	
+	}
 	
 	
 	$data['pagination'] = $this->getPaginationMeta();
@@ -68,28 +82,11 @@ class PdoPager
  */
   private function getPaginationMeta()
   {
-  	// get total found rows
-	$this->_total = $this->_pdo->query("SELECT FOUND_ROWS()")->fetchColumn();
-	
-	// current page no is known
-	
-	
-	// calcute total number of pages
-	$this->_last = floor((($this->_total - 1) / $perpage) + 1);
-	
-	// only if in last page, current pages record count may be 
-	if ($this->_current == $this->_last) 
-	{
-	    $this->_count   = count($data);
-	} else {
-	    $this->_count   = $perpage;	
-	}
-  	
   	$meta = array(
-  			"total" => $this->_total,
-  			"count" => $this->_count,
-  			"current" => $this->_current,
-  			"last" => $this->_last,
+  			"records_total" => $this->_total,
+  			"records_current" => $this->_count,
+  			"current_page_no" => $this->_current,
+  			"last_page_no" => $this->_last,
   		);
   		
     return $meta;
