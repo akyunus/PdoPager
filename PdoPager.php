@@ -1,10 +1,7 @@
 <?php namespace AGTR;
 /**
  * 
- * SQL sorgu sonuçlarýna LIMIT ekleyerek otomatik sayfalama yapar. 
- * sayfalama meta verisini otomatik oluþturur.
- * Pdo ile çalýþýr.
- * sql sorgularý SELECT SQL_CALC_FOUND_ROWS ile yapýlmalý
+ * PdoPager Class calculates and adds LIMIT statement to a SQL query string for paginating results. 
  * 
  * @author Yunus AK <yunus@ak.gen.tr>
  */
@@ -31,8 +28,12 @@ class PdoPager
   	$this->_pdo = $pdo;
   	$this->_pp	= (isset($opts['per_page'])?$opts['per_page'] : $this->_pp);
   }
-  
-  public function paginate($sql,$vars = null,$page = 1,$perpage = null, $getmeta = false)
+/**
+ * Generates the query string, execute it with variables and return the result set.
+ * 
+ * 
+ */
+  public function paginate($sql,$vars = null,$page = 1,$perpage = null, $getmeta = true)
   {
 	
   	$perpage 	= (is_null($perpage)) 	? $this->_pp 	: $perpage;
@@ -62,9 +63,9 @@ class PdoPager
     return $data;
 }
   
-  // paginate ile sonuçlar alýndýktan sonra getpaginationmeta ile sayfalama bilgisi alýnabilir.
-  // sql sorgusu SELECT SQL_CALC_FOUND_ROWS ifadesi ile baþlýyorsa 
-  // getPaginationMeta fonksiyonu anlamlý çalýþacaktýr.
+/**
+ * use mysql queries with SELECT SQL_CALC_FOUND_ROWS for accurate pagination data.
+ */
   private function getPaginationMeta()
   {
   	// get total found rows
