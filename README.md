@@ -1,5 +1,5 @@
 # PdoPager
-A php class for paginating sql select statement results with counting total found rows.
+A php class for pagination, it has a simply function to return results from sql select statement with counting total found rows.
 
 ## Usage
 Here is a simplest implementation example with none additional option.
@@ -16,7 +16,7 @@ Use your defined pdo object to construct PDOPager class. Assuming $pdo variable 
 
     $data = $pager->paginate($sql,$params,3); // get the third page 
   
-  Result $data array has two keys: "results" key has an associative array of query results, "pagination" key has some pagination info as shown. 
+  Result $data array has two keys: "results" key has an associative array of query results, "pagination" key has some pagination info as shown below. 
   
     $data == 
     [ 
